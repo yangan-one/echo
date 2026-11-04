@@ -1,0 +1,13 @@
+services:
+  echo:
+    build: .
+    ports:
+      - "8788:8788"
+    env_file:
+      - .env
+    volumes:
+      - echo-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  echo-data:

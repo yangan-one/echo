@@ -1,0 +1,27 @@
+{
+  "name": "echo-english",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "回响 Echo — 英语听说训练器（V1）",
+  "scripts": {
+    "dev": "vite --port 5180 --host 127.0.0.1",
+    "server": "node server/index.mjs",
+    "start": "node server/index.mjs",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 5180 --host 127.0.0.1",
+    "test": "node --experimental-strip-types scripts/selftest.mts"
+  },
+  "dependencies": {
+    "express": "^4.22.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

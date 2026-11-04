@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: echo
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: ECHO_SECRET
+        generateValue: true
+      - key: ECHO_AI_BASE_URL
+        value: https://api.deepseek.com/v1
+      - key: ECHO_AI_MODEL
+        value: deepseek-chat
+      - key: ECHO_AI_KEY
+        sync: false
+      - key: ECHO_ASR_BASE_URL
+        value: https://api.openai.com/v1
+      - key: ECHO_ASR_MODEL
+        value: whisper-1
+      - key: ECHO_ASR_KEY
+        sync: false
+    disk:
+      name: echo-data
+      mountPath: /app/data
+      sizeGB: 1
