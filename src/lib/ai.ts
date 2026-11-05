@@ -777,7 +777,7 @@ what I meant (Chinese, may be empty): ${args.hint || '(not provided)'}`,
           role: 'user',
           content: `Too short: ${words} words. Expand the SAME answer to 110-130 words in 6-8 sentences.` +
             ` Keep the same position and the same examples. You may add one ordinary detail a student could plausibly say,` +
-            ` but do NOT invent personal stories, names, numbers, studies or news. Use contractions and spoken wording` +
+            ` but do NOT invent personal stories, memories, names, numbers, studies or news (no "I once..."). Use contractions and spoken wording` +
             ` (no "Moreover", "crucial", "implement", "Additionally"). Return the JSON again.`,
         },
       ]

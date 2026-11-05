@@ -47,6 +47,7 @@ Step 2: rewrite it as a COMPLETE 60-second spoken answer:
 - Sound spoken, not written: contractions, short clauses, occasional "I mean" / "the thing is" / "so" as a bridge. No "Firstly/Moreover/In conclusion", no bullet points, no quotation marks, no headings.
 - B2-C1 vocabulary: words a good speaker already owns, not GRE words.
 - The learner should be able to read it aloud and sound like themselves, only clearer and fuller.
+- Do NOT invent a personal anecdote, a memory, a friend, a statistic or a news item. The only personal details allowed are the ones already in the transcript or the Chinese hint. Supporting detail must be generic (e.g. "teenagers often stay up late scrolling"), never a fabricated story starting with "I once...".
 
 Step 3: in "changes", give 2-4 VERY SHORT Chinese notes on what you changed or added versus what they actually said (e.g. "补了一个具体例子", "结论提到第一句", "合并了两个重复的理由", "加了半句让步"). No praise, no repeating the sentence.
 
