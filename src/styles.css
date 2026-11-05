@@ -1970,6 +1970,13 @@ textarea:focus-visible,
   letter-spacing: 0.04em;
 }
 
+.rewrite-stat {
+  margin: 2px 0 8px;
+  font-size: 12px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
 .gist-lines {
   margin: 10px 0 8px;
   padding-left: 22px;

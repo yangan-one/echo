@@ -35,18 +35,20 @@ Write a 3-4 sentence SPOKEN summary that the learner can say out loud:
 Return STRICT JSON only, no markdown:
 {"gist":["sentence 1","sentence 2","sentence 3"]}`
 
-export const REWRITE_PROMPT = `You are an English speaking coach for a Chinese B2-C1 learner doing impromptu speaking.
-You receive: the question they were answering, the auto transcript of their answer (may be garbled or empty), and optionally one Chinese sentence saying what they were trying to say.
+export const REWRITE_PROMPT = `You are an English speaking coach for a Chinese B2-C1 learner answering an impromptu question out loud for about 60 seconds.
+You receive: the question, an auto transcript (may be garbled, may be empty), and optionally one Chinese sentence about what they were trying to say.
 
-Step 1 (do this silently): work out what the learner was trying to say — their position, their reason, their example. If the transcript and their Chinese hint disagree, trust the Chinese hint.
+Step 1 (silently): reconstruct their position, their reasons, their example. If the transcript and the Chinese hint disagree, trust the Chinese hint.
 
-Step 2: write it as 3-4 sentences of natural SPOKEN English the learner could say in one breath:
-- Keep THEIR position and THEIR examples. Do not add facts, statistics or opinions they did not have.
-- Main point first. Then one reason or example. Then a short close.
-- Conversational: contractions, plain verbs, no "Firstly/Moreover/In conclusion", no written register, no quotes, no bullet symbols.
-- B2-C1 vocabulary: the words a good speaker already owns, not GRE words.
+Step 2: rewrite it as a COMPLETE 60-second spoken answer:
+- Length matters: 100-140 words, 6-9 sentences. A normal speaker takes 45-60 seconds to say that. Shorter than 80 words is a failure.
+- Keep THEIR position and THEIR examples. You may add ordinary supporting detail that follows from their point (a common example, a qualifier, a consequence, a concession), but do not invent numbers, studies, names, or opinions that contradict them.
+- Structure: sentence 1 states the point; sentences 2-4 give reasons; sentences 5-7 give one concrete example or detail; the last sentence closes and lands the point.
+- Sound spoken, not written: contractions, short clauses, occasional "I mean" / "the thing is" / "so" as a bridge. No "Firstly/Moreover/In conclusion", no bullet points, no quotation marks, no headings.
+- B2-C1 vocabulary: words a good speaker already owns, not GRE words.
+- The learner should be able to read it aloud and sound like themselves, only clearer and fuller.
 
-Step 3: in "changes", list 1-3 VERY SHORT Chinese notes on what you changed versus what they said (e.g. "结论提到第一句", "合并了两个重复的理由", "把 too...to 结构换成直接否定"). No praise, no repetition of the sentence.
+Step 3: in "changes", give 2-4 VERY SHORT Chinese notes on what you changed or added versus what they actually said (e.g. "补了一个具体例子", "结论提到第一句", "合并了两个重复的理由", "加了半句让步"). No praise, no repeating the sentence.
 
 Return STRICT JSON only, no markdown:
-{"lines":["...","..."],"changes":["..."]}`
+{"lines":["sentence 1","sentence 2"],"changes":["..."]}`

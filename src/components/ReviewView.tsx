@@ -264,6 +264,10 @@ export function ReviewView({
                   <li key={i}>{line}</li>
                 ))}
               </ol>
+              <p className="rewrite-stat">
+                {session.rewrite.join(' ').split(/s+/).filter(Boolean).length} 词 · 正常语速约{' '}
+                {Math.round(session.rewrite.join(' ').split(/s+/).filter(Boolean).length / 2.4)} 秒
+              </p>
               {session.rewriteNotes?.length ? (
                 <ul className="rewrite-notes">
                   {session.rewriteNotes.map((n, i) => (

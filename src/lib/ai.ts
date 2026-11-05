@@ -635,7 +635,8 @@ async function remoteGist(cfg: AiConfig, material: { title?: string; text: strin
       },
       body: JSON.stringify({
         model: cfg.model || 'gpt-4o-mini',
-        temperature: 0.4,
+        temperature: 0.5,
+        max_tokens: 900,
         response_format: { type: 'json_object' },
         messages: [
           { role: 'system', content: GIST_PROMPT },
@@ -707,49 +708,98 @@ function offlineRewrite(transcript: string): SpokenRewrite {
   }
 }
 
+const countWords = (s: string) => s.split(' ').filter(Boolean).length
+
+function normalizeLines(parsed: any): string[] {
+  const raw: any[] = Array.isArray(parsed?.lines) ? parsed.lines : []
+  const flat = raw
+    .map((x) => String(x).trim())
+    .filter(Boolean)
+    .flatMap((s: string) => (s.length > 160 ? splitSentences(s) : [s]))
+  return flat.filter((s: string) => s.length > 5).slice(0, 12)
+}
+
 async function remoteRewrite(
   cfg: AiConfig,
   args: { topic?: string; transcript: string; hint?: string },
 ): Promise<SpokenRewrite | null> {
-  const base = cfg.baseUrl.replace(/\/+$/, '')
-  const controller = new AbortController()
-  const timer = window.setTimeout(() => controller.abort(), 30000)
+  const base = cfg.baseUrl.endsWith('/') ? cfg.baseUrl.slice(0, -1) : cfg.baseUrl
+  const messages: Array<{ role: string; content: string }> = [
+    { role: 'system', content: REWRITE_PROMPT },
+    {
+      role: 'user',
+      content: `question: ${args.topic || '(unknown)'}
+transcript:
+"""
+${
+        args.transcript || '(no transcript — the browser recognition failed)'
+      }
+"""
+what I meant (Chinese, may be empty): ${args.hint || '(not provided)'}`,
+    },
+  ]
+
+  const callOnce = async (msgs: Array<{ role: string; content: string }>, temperature: number) => {
+    const controller = new AbortController()
+    const timer = window.setTimeout(() => controller.abort(), 45000)
+    try {
+      const res = await fetch(`${base}/chat/completions`, {
+        method: 'POST',
+        signal: controller.signal,
+        headers: { 'Content-Type': 'application/json', Authorization: authBearer(cfg) },
+        body: JSON.stringify({
+          model: cfg.model || 'gpt-4o-mini',
+          temperature,
+          max_tokens: 900,
+          response_format: { type: 'json_object' },
+          messages: msgs,
+        }),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const data = await res.json()
+      return String(data?.choices?.[0]?.message?.content ?? '')
+    } finally {
+      window.clearTimeout(timer)
+    }
+  }
+
   try {
-    const res = await fetch(`${base}/chat/completions`, {
-      method: 'POST',
-      signal: controller.signal,
-      headers: { 'Content-Type': 'application/json', Authorization: authBearer(cfg) },
-      body: JSON.stringify({
-        model: cfg.model || 'gpt-4o-mini',
-        temperature: 0.4,
-        response_format: { type: 'json_object' },
-        messages: [
-          { role: 'system', content: REWRITE_PROMPT },
-          {
-            role: 'user',
-            content: `question: ${args.topic || '(unknown)'}\ntranscript:\n"""\n${
-              args.transcript || '(no transcript — the browser recognition failed)'
-            }\n"""\nwhat I meant (Chinese, may be empty): ${args.hint || '(not provided)'}`,
-          },
-        ],
-      }),
-    })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const data = await res.json()
-    const parsed = extractJson(String(data?.choices?.[0]?.message?.content ?? ''))
-    const lines = Array.isArray(parsed?.lines)
-      ? parsed.lines.map((x: any) => String(x).trim()).filter((x: string) => x.length > 5)
-      : []
+    let parsed: any = extractJson(await callOnce(messages, 0.5))
+    let lines = normalizeLines(parsed)
+    let words = countWords(lines.join(' '))
+
+    // 模型爱偷懒：太短就再要一遍，只加长度、不加事实
+    if (lines.length && words < 95) {
+      const expand = [
+        ...messages,
+        { role: 'assistant', content: JSON.stringify({ lines, changes: [] }) },
+        {
+          role: 'user',
+          content: `Too short: ${words} words. Expand the SAME answer to 110-130 words in 6-8 sentences.` +
+            ` Keep the same position and the same examples. You may add one ordinary detail a student could plausibly say,` +
+            ` but do NOT invent personal stories, names, numbers, studies or news. Use contractions and spoken wording` +
+            ` (no "Moreover", "crucial", "implement", "Additionally"). Return the JSON again.`,
+        },
+      ]
+      const second = extractJson(await callOnce(expand, 0.6))
+      const lines2 = normalizeLines(second)
+      if (countWords(lines2.join(' ')) > words) {
+        parsed = second
+        lines = lines2
+      }
+    }
+
     if (!lines.length) return null
     const notes = Array.isArray(parsed?.changes)
-      ? parsed.changes.map((x: any) => String(x).trim()).filter((x: string) => x.length > 1).slice(0, 3)
+      ? parsed.changes
+          .map((x: any) => String(x).trim())
+          .filter((x: string) => x.length > 1)
+          .slice(0, 4)
       : []
-    return { lines: lines.slice(0, 5), notes, source: 'remote' }
+    return { lines, notes, source: 'remote' }
   } catch (err) {
     console.warn('[echo] 远程复述失败，回退离线', err)
     return null
-  } finally {
-    window.clearTimeout(timer)
   }
 }
 
