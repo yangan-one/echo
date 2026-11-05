@@ -768,25 +768,29 @@ what I meant (Chinese, may be empty): ${args.hint || '(not provided)'}`,
     let lines = normalizeLines(parsed)
     let words = countWords(lines.join(' '))
 
-    // 模型爱偷懒：太短就再要一遍，只加长度、不加事实
-    if (lines.length && words < 95) {
+    // 模型爱偷懒：太短就再要一遍（最多两轮），只加长度、不加事实
+    for (let round = 0; round < 2 && lines.length && words < 105; round++) {
+      const ask =
+        round === 0
+          ? `Too short: ${words} words. Expand the SAME answer to 110-130 words in 6-8 sentences.` +
+            ' Keep the same position and the same examples. You may add one ordinary detail a student could plausibly say,' +
+            ' but do NOT invent personal stories, memories, names, numbers, studies or news (no "I once..."). Use contractions and spoken wording' +
+            ' (no "Moreover", "crucial", "implement", "Additionally"). Return the JSON again.'
+          : `Still only ${words} words. Add two more sentences of 15-20 words each: one concrete everyday example,` +
+            ' and one sentence about what should change. Keep everything already written, keep it spoken,' +
+            ' and do not invent personal stories, memories or numbers. Return the JSON again.'
       const expand = [
         ...messages,
         { role: 'assistant', content: JSON.stringify({ lines, changes: [] }) },
-        {
-          role: 'user',
-          content: `Too short: ${words} words. Expand the SAME answer to 110-130 words in 6-8 sentences.` +
-            ` Keep the same position and the same examples. You may add one ordinary detail a student could plausibly say,` +
-            ` but do NOT invent personal stories, memories, names, numbers, studies or news (no "I once..."). Use contractions and spoken wording` +
-            ` (no "Moreover", "crucial", "implement", "Additionally"). Return the JSON again.`,
-        },
+        { role: 'user', content: ask },
       ]
-      const second = extractJson(await callOnce(expand, 0.6))
-      const lines2 = normalizeLines(second)
-      if (countWords(lines2.join(' ')) > words) {
-        parsed = second
-        lines = lines2
-      }
+      const next = extractJson(await callOnce(expand, 0.6))
+      const nextLines = normalizeLines(next)
+      const nextWords = countWords(nextLines.join(' '))
+      if (!(nextWords > words)) break
+      parsed = next
+      lines = nextLines
+      words = nextWords
     }
 
     if (!lines.length) return null
