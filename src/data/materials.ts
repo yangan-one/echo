@@ -3,6 +3,7 @@ import { REAL_MATERIALS } from './realMaterials'
 import { REAL_MATERIALS_B } from './realMaterialsB'
 import { REAL_MATERIALS_C } from './realMaterialsC'
 import { REAL_MATERIALS_D } from './realMaterialsD'
+import { OPENINGS } from './openings'
 
 /**
  * 素材库 = 真人原声（TED 截取，见 realMaterials*.ts）+ 少量原创示例（TTS，标为「系统语音」）
@@ -414,12 +415,45 @@ Guest: About two years and every relationship I had that wasn't patient. But the
 ]
 
 /** 保留的原创示例：只留真人素材覆盖不到的形式（双语对照、播客、纪实、会议） */
+const keyOfAudio = (url?: string): string => {
+  const file = url?.split('/').pop() ?? ''
+  return file.replace(/\.mp3$/i, '')
+}
+
+/** 把每段 TED 素材换成「开场 60 秒」，标题、分类、口音沿用；30 秒短版见 shorts.ts */
+const withOpening = (m: Material): Material | null => {
+  const key = keyOfAudio(m.audioUrl)
+  const o = OPENINGS[key]
+  if (!o) return null
+  return {
+    ...m,
+    audioUrl: '/audio/open/' + key + '_60.mp3',
+    text: o.text60,
+    textZh: undefined,
+    seconds: Math.round(o.d60 / 1000),
+  }
+}
+
+/** 开场 30 秒里就有笑声/掌声的，直接不收（用户明确说过不要观众笑声） */
+const NOISY = new Set(['amy_cuddy', 'laura_smythe', 'harville_hendrix', 'rita_pierson', 'dan_pink'])
+
+const cleanLaugh = (t: string) =>
+  t
+    .replace(/\s*\((Laughter|Applause|Audience|Music)\)/gi, '')
+    .replace(/\s*\[(Laughter|Applause|Music)\]/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+
 export const MATERIALS: Material[] = [
   ...REAL_MATERIALS,
   ...REAL_MATERIALS_B,
   ...REAL_MATERIALS_C,
   ...REAL_MATERIALS_D,
 ]
+  .filter((m) => !NOISY.has(keyOfAudio(m.audioUrl)))
+  .map(withOpening)
+  .filter((m): m is Material => m !== null)
+  .map((m) => ({ ...m, text: cleanLaugh(m.text) }))
 
 export const CATEGORIES: Material['category'][] = [
   '双语平行',

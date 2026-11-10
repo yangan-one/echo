@@ -1,4 +1,5 @@
 import type { ShortClip } from '../types'
+import { OPENINGS } from './openings'
 
 // 30 秒短版：从一句话的开头切入，句尾结束。音频由 scripts/short_build.mjs 生成。
 // key 与素材 audioUrl 的文件名一致（/audio/<key>.mp3 -> <key>）。
@@ -48,8 +49,12 @@ export const SHORTS: Record<string, ShortClip> = {
   susan_cain: { audioUrl: '/audio/susan_cain_30.mp3', durationMs: 31500, text: "And it went like this: \"R-O-W-D-I-E, that's the way we spell rowdie. Rowdie, rowdie, let's get rowdie.\" (Laughter) Yeah. So I couldn't figure out for the life of me why we were supposed to be so rowdy, or why we had to spell this word incorrectly. (Laughter) But I recited a cheer. I recited a cheer along with everybody else. I did my best. And I just waited for the time that I could go off and read my books.", textZh: "来凝聚我们的“夏令营精神”。听上去是这样的：“R-O-W-D-I-E，“R-O-W-D-I-E，这是我们拼写“吵闹\"的口号！噪音，喧闹， 我们要变得吵一点！”（笑声）对，就是这样。可我怎样也不明白为什么我们需要这么吵闹？为什么我们非要错误地拼写 “Rowdy”?（笑声）但我还是和其他伙伴一起 背熟了这个口号。我尽了我最大的努力。" },
 }
 
+/** 优先用「开场 30 秒」；没有开场版才退回旧的 30 秒切片 */
 export function shortOf(audioUrl?: string): ShortClip | undefined {
   if (!audioUrl) return undefined
-  const key = audioUrl.split('/').pop()?.replace(/\.mp3$/, '')
-  return key ? SHORTS[key] : undefined
+  const file = audioUrl.split('/').pop() ?? ''
+  const key = file.replace(/\.mp3$/i, '').replace(/_60$/i, '')
+  const o = OPENINGS[key]
+  if (o) return { audioUrl: '/audio/open/' + key + '_30.mp3', durationMs: o.d30, text: o.text30 }
+  return file.replace(/\.mp3$/i, '') in SHORTS ? SHORTS[file.replace(/\.mp3$/i, '')] : undefined
 }

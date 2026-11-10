@@ -210,7 +210,7 @@ export function ListenView({
                       material.audioUrl
                         ? useShort
                           ? ' · 30 秒短版'
-                          : ' · 75 秒完整片段'
+                          : ' · 60 秒完整片段'
                         : ' · 你导入的音频'
                     }`
                   : tts.error
@@ -238,7 +238,7 @@ export function ListenView({
               短版 30 秒
             </button>
             <button className={`rate ${!useShort ? 'is-on' : ''}`} onClick={() => setLen('full')}>
-              完整 75 秒
+              完整 60 秒
             </button>
           </div>
         ) : null}
@@ -247,7 +247,7 @@ export function ListenView({
             {material.audioUrl
               ? useShort
                 ? '短版从一句话的开头切入、句尾收住，文本与音频一一对应。想练长材料切「完整」。'
-                : 'TED 官方视频的 75 秒截取 + 官方字幕，CC BY-NC-ND，仅限个人学习。'
+                : 'TED 官方视频的开场 60 秒 + 官方字幕（从第一句开始，主题句就在开头），CC BY-NC-ND，仅限个人学习。'
               : '真人录音。原文如果和音频对不上，点「换文本」把你手上那份转写粘进来。'}
           </p>
         ) : (

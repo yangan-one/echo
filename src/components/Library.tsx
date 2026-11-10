@@ -42,7 +42,7 @@ export function Library({
             <div className="list-main">
               <div className="list-title">{m.title}</div>
               <div className="list-meta">
-                {m.accent} · {shortOf(m.audioUrl) ? '30s / 75s' : `约 ${m.seconds}s`} · 音变{m.reduction} · 话题{m.familiarity}
+                {m.accent} · {shortOf(m.audioUrl) ? '30s / 60s' : `约 ${m.seconds}s`} · 音变{m.reduction} · 话题{m.familiarity}
               </div>
             </div>
             <span className="chev">→</span>
