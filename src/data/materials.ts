@@ -4,6 +4,8 @@ import { REAL_MATERIALS_B } from './realMaterialsB'
 import { REAL_MATERIALS_C } from './realMaterialsC'
 import { REAL_MATERIALS_D } from './realMaterialsD'
 import { OPENINGS } from './openings'
+import { OPENING_ZH } from './openingsZh'
+import { BIZ_MATERIALS } from './bizMaterials'
 
 /**
  * 素材库 = 真人原声（TED 截取，见 realMaterials*.ts）+ 少量原创示例（TTS，标为「系统语音」）
@@ -429,7 +431,7 @@ const withOpening = (m: Material): Material | null => {
     ...m,
     audioUrl: '/audio/open/' + key + '_60.mp3',
     text: o.text60,
-    textZh: undefined,
+    textZh: OPENING_ZH[key]?.zh60,
     seconds: Math.round(o.d60 / 1000),
   }
 }
@@ -455,7 +457,10 @@ export const MATERIALS: Material[] = [
   .filter((m): m is Material => m !== null)
   .map((m) => ({ ...m, text: cleanLaugh(m.text) }))
 
+export const ALL_MATERIALS: Material[] = [...MATERIALS, ...BIZ_MATERIALS]
+
 export const CATEGORIES: Material['category'][] = [
+  '商业',
   '双语平行',
   '演讲',
   '新闻',

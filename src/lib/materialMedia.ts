@@ -1,4 +1,4 @@
-import { MATERIALS } from '../data/materials'
+import { ALL_MATERIALS as MATERIALS } from '../data/materials'
 import type { Material } from '../types'
 import { getAudio, putAudio, delAudio } from './idb'
 

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { CATEGORIES, MATERIALS } from '../data/materials'
+import { CATEGORIES, ALL_MATERIALS as MATERIALS } from '../data/materials'
 import { shortOf } from '../data/shorts'
 import type { Category } from '../types'
 

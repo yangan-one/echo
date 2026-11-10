@@ -1,5 +1,7 @@
 import type { ShortClip } from '../types'
 import { OPENINGS } from './openings'
+import { OPENING_ZH } from './openingsZh'
+import { BIZ_SHORTS } from './bizMaterials'
 
 // 30 秒短版：从一句话的开头切入，句尾结束。音频由 scripts/short_build.mjs 生成。
 // key 与素材 audioUrl 的文件名一致（/audio/<key>.mp3 -> <key>）。
@@ -55,6 +57,8 @@ export function shortOf(audioUrl?: string): ShortClip | undefined {
   const file = audioUrl.split('/').pop() ?? ''
   const key = file.replace(/\.mp3$/i, '').replace(/_60$/i, '')
   const o = OPENINGS[key]
-  if (o) return { audioUrl: '/audio/open/' + key + '_30.mp3', durationMs: o.d30, text: o.text30 }
-  return file.replace(/\.mp3$/i, '') in SHORTS ? SHORTS[file.replace(/\.mp3$/i, '')] : undefined
+  if (o) return { audioUrl: '/audio/open/' + key + '_30.mp3', durationMs: o.d30, text: o.text30, textZh: OPENING_ZH[key]?.zh30 }
+  const plain = file.replace(/\.mp3$/i, '')
+  if (BIZ_SHORTS[plain]) return BIZ_SHORTS[plain]
+  return plain in SHORTS ? SHORTS[plain] : undefined
 }

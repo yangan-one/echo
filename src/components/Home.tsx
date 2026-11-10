@@ -1,4 +1,4 @@
-import { MATERIALS } from '../data/materials'
+import { ALL_MATERIALS as MATERIALS } from '../data/materials'
 import type { AppState } from '../types'
 import { TAG_MAP } from '../types'
 import { fmtDate } from '../lib/format'
