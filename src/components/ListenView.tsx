@@ -242,33 +242,11 @@ export function ListenView({
             </button>
           </div>
         ) : null}
-        {isReal ? (
-          <p className="fineprint">
-            {material.audioUrl
-              ? useShort
-                ? '短版从一句话的开头切入、句尾收住，文本与音频一一对应。想练长材料切「完整」。'
-                : 'TED 官方视频的开场 60 秒 + 官方字幕（从第一句开始，主题句就在开头），CC BY-NC-ND，仅限个人学习。'
-              : '真人录音。原文如果和音频对不上，点「换文本」把你手上那份转写粘进来。'}
-          </p>
-        ) : (
-          <p className="fineprint">
-            还没有真人原声，先用系统语音占位——它只能帮你练「听 → 说」的链路，练不到真实语流。
-          </p>
-        )}
         <div className="rates" style={{ marginTop: 10 }}>
           <button className="btn ghost sm" onClick={() => setSheetOpen(true)}>
             {isReal ? '换原声 / 换文本' : '导入真人原声'}
           </button>
         </div>
-      </div>
-
-      <div className="card">
-        <div className="card-label">怎么练</div>
-        <ol className="steps">
-          <li>先完整听一遍，不看原文。</li>
-          <li>第二遍调速，记下没听清的位置。</li>
-          <li>然后用英文讲 60 秒，简单句也行。</li>
-        </ol>
       </div>
 
       <div className="card">
@@ -286,7 +264,6 @@ export function ListenView({
             {showZh ? <p className="material-text zh">{zhNow}</p> : null}
           </>
         ) : null}
-        {material.note ? <p className="fineprint">{material.note}</p> : null}
       </div>
 
       <button className="btn primary wide sticky-cta" onClick={onStart}>

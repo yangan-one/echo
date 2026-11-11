@@ -65,8 +65,6 @@ export function MarksView({
           ← 返回
         </button>
         <div className="kicker">卡点库</div>
-        <h1>标记过的每一处</h1>
-        <p className="fineprint">状态变成「已重录」，才算改过一次。</p>
       </div>
 
       <div className="filter-row">

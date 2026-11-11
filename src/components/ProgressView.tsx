@@ -114,7 +114,6 @@ export function ProgressView({
         </button>
         <div className="kicker">进度</div>
         <h1>只跟自己比</h1>
-        <p className="fineprint">不排名，不打卡。只看两件事：说得更快了吗，改掉的多了吗。</p>
       </div>
 
       <div className="card">
@@ -143,7 +142,6 @@ export function ProgressView({
       <div className="card">
         <div className="card-label">语速趋势（最近 12 次，wpm）</div>
         {wpmSeries.length >= 2 ? <Spark values={wpmSeries} /> : <p className="muted">再练一次就能连成线。</p>}
-        <p className="fineprint">语速不是越高越好。它只是"更顺"的一个侧面指标。</p>
       </div>
 
       <div className="card">

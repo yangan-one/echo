@@ -24,8 +24,6 @@ export function Library({
           ← 返回
         </button>
         <div className="kicker">素材库 · {MATERIALS.length} 条</div>
-        <h1>先选一条，听完再讲</h1>
-        <p className="fineprint">四维难度：语速 × 口音 × 熟悉度 × 音变。点进去可以导入真人原声。</p>
       </div>
 
       <div className="filter-row">

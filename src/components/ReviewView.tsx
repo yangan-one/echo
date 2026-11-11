@@ -390,7 +390,6 @@ export function ReviewView({
           在这里打标 · {fmtPrecise(player.currentMs)}
         </button>
         <p className="fineprint">
-          听到卡住的地方先暂停，再打标。一次标一个点。快捷键：空格播放/暂停，M 打标，← → 前后 2 秒。
         </p>
       </div>
 
