@@ -65,14 +65,14 @@ for (const it of items) {
       console.log('skip (no transcript)', id)
       continue
     }
-    const start = 6
-    const rate = words.length / Math.max(60, dur - start)
+    const start = 0
+    const rate = words.length / Math.max(60, dur)
     const take = (sec) => words.slice(0, Math.min(words.length, Math.round(sec * rate))).join(' ')
     const f30 = `${OUT}/${id}_30.mp3`
     const f60 = `${OUT}/${id}_60.mp3`
     const cut = (t, f) =>
       new Promise((res) =>
-        execFile(FF, ['-y', '-ss', String(start), '-t', String(t), '-i', enc, '-vn', '-ac', '1', '-ar', '22050', '-b:a', '48k', f], { maxBuffer: 1 << 22 }, () => res(existsSync(f)))
+        execFile(FF, ['-y', '-ss', '0', '-t', String(t), '-i', enc, '-vn', '-ac', '1', '-ar', '22050', '-b:a', '48k', f], { maxBuffer: 1 << 22 }, () => res(existsSync(f)))
       )
     const ok30 = await cut(30, f30)
     const ok60 = await cut(60, f60)

@@ -43,8 +43,8 @@ rows.forEach((r, i) => {
   out.push(`    source: 'NPR · The Indicator',`)
   out.push(`    category: '商业',`)
   out.push(`    seconds: 60,`)
-  out.push(`    text: \`${esc(trimEn(r.text60))}\`,`)
-  out.push(`    textZh: \`${esc(trimZh(z.zh60))}\`,`)
+  out.push(`    text: \`${esc(r.text60)}\`,`)
+  out.push(`    textZh: \`${esc((z.zh60 || "").trim())}\`,`)
   out.push(`    accent: '美音',`)
   out.push(`    reduction: '中',`)
   out.push(`    familiarity: '一般',`)
@@ -58,7 +58,7 @@ out.push('export const BIZ_SHORTS: Record<string, { audioUrl: string; durationMs
 rows.forEach((r) => {
   const z = zh[r.key] || {}
   out.push(
-    `  '${r.key}_60': { audioUrl: '/audio/biz/${r.key}_30.mp3', durationMs: 30000, text: \`${esc(trimEn(r.text30))}\`, textZh: \`${esc(trimZh(z.zh30))}\` },`
+    `  '${r.key}_60': { audioUrl: '/audio/biz/${r.key}_30.mp3', durationMs: 30000, text: \`${esc(r.text30)}\`, textZh: \`${esc((z.zh30 || "").trim())}\` },`
   )
 })
 out.push('}')

@@ -37,7 +37,7 @@ function serverAi(): AiConfig {
 type Route =
   | { name: 'home' }
   | { name: 'library' }
-  | { name: 'listen'; materialId: string }
+  | { name: 'listen'; materialId: string; from?: 'home' | 'library' }
   | { name: 'summary'; materialId: string }
   | { name: 'topic' }
   | { name: 'impromptu'; version: number; parentId?: string }
@@ -235,7 +235,7 @@ export default function App() {
   }
 
   if (route.name === 'library') {
-    return <Library onBack={() => setRoute({ name: 'home' })} onListen={(id) => setRoute({ name: 'listen', materialId: id })} />
+    return <Library onBack={() => setRoute({ name: 'home' })} onListen={(id) => setRoute({ name: 'listen', materialId: id, from: 'library' })} />
   }
 
   if (route.name === 'listen') {
@@ -244,7 +244,7 @@ export default function App() {
     return (
       <ListenView
         material={material}
-        onBack={() => setRoute({ name: 'library' })}
+        onBack={() => setRoute(route.from === 'library' ? { name: 'library' } : { name: 'home' })}
         onStart={() => setRoute({ name: 'summary', materialId: material.id })}
         onTextSaved={() => setTextTick((n) => n + 1)}
       />
@@ -366,7 +366,7 @@ export default function App() {
   return (
     <Home
       state={state}
-      onListen={(id) => setRoute({ name: 'listen', materialId: id })}
+      onListen={(id) => setRoute({ name: 'listen', materialId: id, from: 'home' })}
       onLibrary={() => setRoute({ name: 'library' })}
       onImpromptu={() => setRoute({ name: 'topic' })}
       onMarks={() => setRoute({ name: 'marks' })}
